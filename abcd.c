@@ -285,6 +285,7 @@ int main() {
 
 	initscr();
 	noecho();
+	keypad(stdscr, TRUE);
 
 	srand(time(NULL));
 
@@ -296,15 +297,19 @@ int main() {
 
 		switch(c) {
 		case 'j':
+		case KEY_DOWN:
 			do_move(&playing_field, DIR_DOWN);
 			break;
 		case 'k':
+		case KEY_UP:
 			do_move(&playing_field, DIR_UP);
 			break;
 		case 'h':
+		case KEY_LEFT:
 			do_move(&playing_field, DIR_LEFT);
 			break;
 		case 'l':
+		case KEY_RIGHT:
 			do_move(&playing_field, DIR_RIGHT);
 			break;
 		case 'q':
