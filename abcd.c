@@ -10,6 +10,7 @@ typedef struct _field {
 	char data[FIELD_DIM][FIELD_DIM];
 	int offset_x, offset_y;
 	char flags;
+	int score;
 } field_t;
 
 #define FIELD_FLAG_FINISHED 0x01
@@ -97,6 +98,7 @@ void init_playing_field(field_t *f) {
 void redraw(field_t *f) {
 	int y, x;
 
+	mvprintw(f->offset_y-2, f->offset_x, "Score: %d", f->score);
 	LOOP_FIELD {
 		mvprintw(f->offset_y+y, f->offset_x+(x*2), "%c", f->data[y][x]);
 	}
@@ -128,6 +130,7 @@ void do_move(field_t *f, direction_t dir) {
 
 			for (j = 0; j < FIELD_DIM; j++) {
 				if (save[j] != '.' && save[j] == save[j+1]) {
+					f->score += (save[j]+1-'a')*4;
 					save[j] += 1;
 					save[j+1] = '.';
 				}
@@ -166,6 +169,7 @@ void do_move(field_t *f, direction_t dir) {
 
 			for (j = 0; j < FIELD_DIM; j++) {
 				if (save[j] != '.' && save[j] == save[j+1]) {
+					f->score += (save[j]+1-'a')*4;
 					save[j] += 1;
 					save[j+1] = '.';
 				}
@@ -204,6 +208,7 @@ void do_move(field_t *f, direction_t dir) {
 
 			for (j = 0; j < FIELD_DIM; j++) {
 				if (save[j] != '.' && save[j] == save[j+1]) {
+					f->score += (save[j]+1-'a')*4;
 					save[j] += 1;
 					save[j+1] = '.';
 				}
@@ -241,6 +246,7 @@ void do_move(field_t *f, direction_t dir) {
 
 			for (j = 0; j < FIELD_DIM; j++) {
 				if (save[j] != '.' && save[j] == save[j+1]) {
+					f->score += (save[j]+1-'a')*4;
 					save[j] += 1;
 					save[j+1] = '.';
 				}
@@ -305,12 +311,13 @@ int main() {
 			playing_field.flags |= FIELD_FLAG_FINISHED;
 			break;
 		default:
-			mvprintw(1, 1, "%d", c);
 			break;
 		}
 	}
 
 	endwin();
+
+	printf("Final score: %d\n", playing_field.score);
 
 	return 0;
 }
