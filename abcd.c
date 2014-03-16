@@ -5,6 +5,7 @@
 
 // WIDTHxHEIGHT
 #define FIELD_DIM 4
+#define SAVE_FILENAME "abcd.save"
 
 typedef struct _field {
 	char data[FIELD_DIM][FIELD_DIM];
@@ -284,7 +285,7 @@ void save_state(field_t *f) {
 	int dimension = FIELD_DIM;
 	int x, y;
 
-	if (!(fp = fopen("abcd.save", "w")))
+	if (!(fp = fopen(SAVE_FILENAME, "w")))
 		return;
 
 	// write dimensions to the file so we don't open one with less/more letters
@@ -307,7 +308,7 @@ void load_state(field_t* f) {
 	int buf, y, x;
 	char buf2;
 
-	if (!(fp = fopen("abcd.save", "r")))
+	if (!(fp = fopen(SAVE_FILENAME, "r")))
 		return;
 
 	fread(&buf, sizeof(int), 1, fp);
@@ -323,6 +324,10 @@ void load_state(field_t* f) {
 		fread(&buf2, sizeof(char), 1, fp);
 		f->data[y][x] = buf2;
 	}
+
+	fclose(fp);
+
+	unlink(SAVE_FILENAME);
 }
 
 int main() {
