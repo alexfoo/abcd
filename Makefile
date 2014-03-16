@@ -1,6 +1,7 @@
 CC=gcc
 FILES=abcd.o
 CFLAGS=-ggdb3 -lncurses
+OTHER_FILES=abcd abcd.save
 
 .c.o:
 	$(CC) $(CFLAGS) $< -c
@@ -11,4 +12,4 @@ abcd: $(FILES)
 all: abcd
 
 clean:
-	rm -f $(FILES) abcd abcd.save
+	rm -f $(FILES) $(OTHER_FILES)
