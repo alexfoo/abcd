@@ -90,7 +90,6 @@ void do_move(field_t *f, direction_t dir) {
 			}
 
 			for (j = 0; j < FIELD_DIM; j++) {
-				//mvprintw(20-j, 20+(x*4), "%c %d", save[j], j); dat debug
 				if (save[j] != '.' && save[j] == save[j+1]) {
 					save[j] += 1;
 					save[j+1] = '.';
@@ -129,7 +128,6 @@ void do_move(field_t *f, direction_t dir) {
 			}
 
 			for (j = 0; j < FIELD_DIM; j++) {
-				//mvprintw(20-j, 20+(x*4), "%c %d", save[j], j); dat debug
 				if (save[j] != '.' && save[j] == save[j+1]) {
 					save[j] += 1;
 					save[j+1] = '.';
@@ -168,7 +166,6 @@ void do_move(field_t *f, direction_t dir) {
 			}
 
 			for (j = 0; j < FIELD_DIM; j++) {
-				//mvprintw(20-j, 20+(x*4), "%c %d", save[j], j); dat debug
 				if (save[j] != '.' && save[j] == save[j+1]) {
 					save[j] += 1;
 					save[j+1] = '.';
@@ -206,7 +203,6 @@ void do_move(field_t *f, direction_t dir) {
 			}
 
 			for (j = 0; j < FIELD_DIM; j++) {
-				//mvprintw(20-j, 20+(x*4), "%c %d", save[j], j); dat debug
 				if (save[j] != '.' && save[j] == save[j+1]) {
 					save[j] += 1;
 					save[j+1] = '.';
@@ -256,19 +252,15 @@ int main() {
 
 		switch(c) {
 		case 'j':
-			mvprintw(1, 1, "%d down     ", c);
 			do_move(&playing_field, DIR_DOWN);
 			break;
 		case 'k':
-			mvprintw(1, 1, "%d up       ", c);
 			do_move(&playing_field, DIR_UP);
 			break;
 		case 'h':
-			mvprintw(1, 1, "%d left     ", c);
 			do_move(&playing_field, DIR_LEFT);
 			break;
 		case 'l':
-			mvprintw(1, 1, "%d right    ", c);
 			do_move(&playing_field, DIR_RIGHT);
 			break;
 		case 'q':
