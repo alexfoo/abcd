@@ -9,7 +9,10 @@
 typedef struct _field {
 	char data[FIELD_DIM][FIELD_DIM];
 	int offset_x, offset_y;
+	char flags;
 } field_t;
+
+#define FIELD_FLAG_FINISHED 0x01
 
 // requires int y, x; obviously
 #define LOOP_FIELD for (y = 0; y < FIELD_DIM; y++) \
@@ -23,8 +26,15 @@ typedef enum {
 } direction_t;
 
 void add_new_char(field_t *f) {
-	int y, x;
-	while(1) {
+	int y, x, free;
+
+	LOOP_FIELD {
+		if (f->data[y][x] == '.') {
+			free++;
+		}
+	}
+
+	while(free) {
 		y = rand() % FIELD_DIM;
 		x = rand() % FIELD_DIM;
 
@@ -42,6 +52,31 @@ void clear_line(char *line) {
 	}
 }
 
+void check_moves(field_t *f) {
+	int y, x, free = 0;
+	char c;
+
+	// If we have free tiles, moves are possible
+	LOOP_FIELD {
+		if (f->data[y][x] == '.') {
+			return;
+		}
+	}
+
+	// Check for possible moves when the field is full, by checking neigbouring tiles
+	LOOP_FIELD {
+		c = f->data[y][x];
+		if (	(y < FIELD_DIM-1 && f->data[y+1][x] == c) ||
+			(x < FIELD_DIM-1 && f->data[y][x+1] == c) ||
+			(y > 0 && f->data[y-1][x] == c) ||
+			(x > 0 && f->data[y][x-1] == c)) {
+			return;
+		}
+	}
+
+	f->flags |= FIELD_FLAG_FINISHED;
+}
+
 void init_playing_field(field_t *f) {
 	int y;
 
@@ -51,6 +86,8 @@ void init_playing_field(field_t *f) {
 
 	f->offset_y = 5;
 	f->offset_x = 5;
+
+	f->flags = 0;
 
 	// place two a:s to start playing with
 	add_new_char(f);
@@ -231,12 +268,13 @@ void do_move(field_t *f, direction_t dir) {
 
 	if (moved)
 		add_new_char(f);
+
+	check_moves(f);
 	redraw(f);
 }
 
 int main() {
 	int c;
-	int running = 1;
 	field_t playing_field;
 
 	initscr();
@@ -247,7 +285,7 @@ int main() {
 	init_playing_field(&playing_field);
 	redraw(&playing_field);
 
-	while(running) {
+	while(!(playing_field.flags & FIELD_FLAG_FINISHED)) {
 		c = getch();
 
 		switch(c) {
@@ -264,7 +302,7 @@ int main() {
 			do_move(&playing_field, DIR_RIGHT);
 			break;
 		case 'q':
-			running = 0;
+			playing_field.flags |= FIELD_FLAG_FINISHED;
 			break;
 		default:
 			mvprintw(1, 1, "%d", c);
