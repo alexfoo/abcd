@@ -279,9 +279,58 @@ void do_move(field_t *f, direction_t dir) {
 	redraw(f);
 }
 
+void save_state(field_t *f) {
+	FILE *fp;
+	int dimension = FIELD_DIM;
+	int x, y;
+
+	if (!(fp = fopen("abcd.save", "w")))
+		return;
+
+	// write dimensions to the file so we don't open one with less/more letters
+	fwrite(&dimension, sizeof(int), 1, fp);
+
+	// for now we don't need to save the flags
+
+	fwrite(&(f->score), sizeof(int), 1, fp);
+
+	// This can probably be written more efficiently using the third argument of fwrite(), but... meh
+	LOOP_FIELD {
+		fwrite(&(f->data[y][x]), sizeof(char), 1, fp);
+	}
+	
+	fclose(fp);
+}
+
+void load_state(field_t* f) {
+	FILE *fp;
+	int buf, y, x;
+	char buf2;
+
+	if (!(fp = fopen("abcd.save", "r")))
+		return;
+
+	fread(&buf, sizeof(int), 1, fp);
+	if (buf != FIELD_DIM) {
+		printf("Savefile not compatible, remove it and try again\n");
+		exit(1);
+	}
+
+	fread(&buf, sizeof(int), 1, fp);
+	f->score = buf;
+
+	LOOP_FIELD {
+		fread(&buf2, sizeof(char), 1, fp);
+		f->data[y][x] = buf2;
+	}
+}
+
 int main() {
 	int c;
 	field_t playing_field;
+
+	init_playing_field(&playing_field);
+	load_state(&playing_field);
 
 	initscr();
 	noecho();
@@ -289,7 +338,6 @@ int main() {
 
 	srand(time(NULL));
 
-	init_playing_field(&playing_field);
 	redraw(&playing_field);
 
 	while(!(playing_field.flags & FIELD_FLAG_FINISHED)) {
@@ -313,6 +361,7 @@ int main() {
 			do_move(&playing_field, DIR_RIGHT);
 			break;
 		case 'q':
+			save_state(&playing_field);
 			playing_field.flags |= FIELD_FLAG_FINISHED;
 			break;
 		default:
