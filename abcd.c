@@ -90,6 +90,7 @@ void init_playing_field(field_t *f) {
 	f->offset_x = 5;
 
 	f->flags = 0;
+	f->score = 0;
 
 	// place two a:s to start playing with
 	add_new_char(f);
