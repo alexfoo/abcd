@@ -29,15 +29,11 @@ typedef enum {
 } direction_t;
 
 void add_new_char(field_t *f) {
-	int y, x, free;
+	int y, x;
 
-	LOOP_FIELD {
-		if (f->data[y][x] == '.') {
-			free++;
-		}
-	}
-
-	while(free) {
+	// This is kinda stupid, but this function _should_ not be called if there
+	// are no free spaces.
+	while(1) {
 		y = rand() % FIELD_DIM;
 		x = rand() % FIELD_DIM;
 
