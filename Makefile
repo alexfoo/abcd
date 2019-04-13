@@ -4,7 +4,7 @@ CFLAGS=-ggdb3 -lncurses
 OTHER_FILES=abcd abcd.save
 
 .c.o:
-	$(CC) $(CFLAGS) $< -c
+	$(CC) $< -c
 
 abcd: $(FILES)
 	$(CC) $(CFLAGS) -o abcd $(FILES)
